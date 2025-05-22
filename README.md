@@ -1,169 +1,174 @@
-<strong>This repository covers all the topics for the Oracle 1Z0-071 SQL Exam.</strong>
+# Sample Database Setup Guide
 
-<strong>How to Use</strong>
+This guide will help you set up the sample database used throughout this Oracle SQL learning repository. The sample database models a fictional company called "TechCorp" with departments, employees, products, customers, and orders.
 
-    Clone or download the repository to your local machine.
-    Explore the organized folders for each exam topic.
-    Read detailed explanations.
-    Contribute and collaborate with the community to enhance your understanding.
+## Prerequisites
 
-<strong>Topics Covered</strong><br><br>
-Relational Database Concepts
+- Oracle Database 19c or later installed (or access to an Oracle Cloud instance)
+- SQL*Plus or another SQL client tool
+- Basic knowledge of database administration
 
-    Explaining Theoretical and Physical Aspects:
-        Understand the theoretical and physical aspects of a relational database.
+## Setup Options
 
-    Relating Clauses in SQL Select Statement to ERD Components:
-        Establish the relationship between SQL Select Statement clauses and components of an Entity-Relationship Diagram (ERD).
+### Option 1: Quick Setup (Recommended)
 
-    Explaining Database and SQL Relationship:
-        Understand the relationship between a database and SQL.
+Run the automated setup script which will create all tables, constraints, and load sample data:
 
-Retrieving Data using the SQL SELECT Statement
+```bash
+cd setup/scripts
+sqlplus system/your_password@localhost:1521/ORCLPDB1 @setup_all.sql
+```
 
-    Column Aliases:
-        Master the use of column aliases in SQL queries.
+### Option 2: Manual Setup
 
-    SQL SELECT Statement:
-        Learn the ins and outs of the SQL SELECT statement for effective data retrieval.
+If you prefer to understand each step of the setup process, follow these instructions:
 
-    Concatenation, Literal Character Strings, DISTINCT Keyword:
-        Utilize concatenation, literal character strings, alternative quote operators, and the DISTINCT keyword.
+#### 1. Create the TechCorp User
 
-    Arithmetic Expressions and NULL Values:
-        Apply arithmetic expressions and handle NULL values in the SELECT statement.
+Connect to your Oracle database as a user with administrative privileges:
 
-Restricting and Sorting Data
+```bash
+sqlplus system/your_password@localhost:1521/ORCLPDB1
+```
 
-    Rules of Precedence for Operators:
-        Apply rules of precedence for operators in an expression.
+Run the following commands to create a new user and grant necessary privileges:
 
-    Limiting Rows Returned and Sorting Data:
-        Restrict the number of rows returned, use substitution variables, and apply sorting.
+```sql
+-- Create user
+CREATE USER techcorp IDENTIFIED BY techcorp_password;
 
-Using Single-Row Functions to Customize Output
+-- Grant privileges
+GRANT CONNECT, RESOURCE, CREATE VIEW, CREATE SYNONYM TO techcorp;
+GRANT UNLIMITED TABLESPACE TO techcorp;
 
-    Manipulating Strings and Performing Arithmetic with Date Data:
-        Explore character functions for string manipulation and arithmetic operations with date data.
+-- Exit system user
+EXIT
+```
 
-    Manipulating Numbers with ROUND, TRUNC, and MOD Functions:
-        Master number manipulation with ROUND, TRUNC, and MOD functions.
+#### 2. Connect as TechCorp User
 
-    Manipulating Dates with Date Function:
-        Effectively manipulate dates using the date function.
+```bash
+sqlplus techcorp/techcorp_password@localhost:1521/ORCLPDB1
+```
 
-Using Conversion Functions and Conditional Expressions
+#### 3. Create Tables
 
-    NVL, NULLIF, and COALESCE Functions:
-        Apply conditional functions such as NVL, NULLIF, and COALESCE.
+Run the table creation script:
 
-    Implicit and Explicit Data Type Conversion:
-        Understand implicit and explicit data type conversion.
+```sql
+@scripts/create_tables.sql
+```
 
-    TO_CHAR, TO_NUMBER, TO_DATE Conversion Functions:
-        Utilize conversion functions like TO_CHAR, TO_NUMBER, and TO_DATE.
+#### 4. Create Constraints
 
-    Nesting Multiple Functions:
-        Explore the power of nesting multiple functions for complex transformations.
+Run the constraints creation script:
 
-Reporting Aggregated Data Using Group Functions
+```sql
+@scripts/create_constraints.sql
+```
 
-    Restricting and Creating Groups of Data:
-        Learn to restrict group results and create groups of data.
+#### 5. Load Sample Data
 
-    Using Group Functions:
-        Apply group functions for effective reporting on aggregated data.
+Run the data loading script:
 
-Displaying Data from Multiple Tables
+```sql
+@scripts/load_data.sql
+```
 
-    Self-Joins, Various Types of Joins, Non Equijoins:
-        Master self-joins, various types of joins, and non-equijoins.
+## Database Schema
 
-    OUTER Joins and Cartesian Products:
-        Understand and use OUTER joins and be aware of Cartesian products.
+The TechCorp sample database includes the following tables:
 
-Using Subqueries to Solve Queries
+### Core Tables
 
-    Single Row and Multiple Row Subqueries:
-        Learn to use single-row and multiple-row subqueries.
+- **DEPARTMENTS**: Company departments
+- **EMPLOYEES**: Employee information
+- **JOBS**: Job titles and salary ranges
+- **LOCATIONS**: Office locations
+- **REGIONS**: Geographic regions
 
-    Update and Delete with Correlated Subqueries:
-        Perform updates and deletions using correlated subqueries.
+### Business Tables
 
-Using SET Operators
+- **CUSTOMERS**: Customer information
+- **PRODUCTS**: Product catalog
+- **CATEGORIES**: Product categories
+- **ORDERS**: Customer orders
+- **ORDER_ITEMS**: Items within orders
+- **INVENTORY**: Product inventory levels
 
-    Matching SELECT Statements and ORDER BY Clause:
-        Match SELECT statements using SET operators and employ the ORDER BY clause in set operations.
+### Reference Tables
 
-    INTERSECT, MINUS, UNION, and UNION ALL Operators:
-        Utilize set operators like INTERSECT, MINUS, UNION, and UNION ALL.
+- **COUNTRIES**: Country information
+- **CURRENCIES**: Currency codes and names
 
-Managing Tables using DML Statements
+## Entity-Relationship Diagram
 
-    Managing Database Transactions and Controlling Transactions:
-        Learn effective management and control of database transactions.
+See the [Database Schema Diagram](database_schema.md) for a visual representation of the tables and their relationships.
 
-    Insert, Update, Delete Operations and Multi-Table Inserts:
-        Perform insert, update, and delete operations, and master multi-table inserts.
+## Verification
 
-    Performing Merge Statements:
-        Understand and use the powerful MERGE statements.
+To verify your setup was successful, run the following query:
 
-Managing Indexes, Synonyms, and Sequences
+```sql
+SELECT table_name 
+FROM user_tables 
+ORDER BY table_name;
+```
 
-    Managing Indexes:
-        Learn to manage indexes for optimal query performance.
+You should see all the tables listed above.
 
-    Managing Synonyms:
-        Utilize synonyms for efficient access to database objects.
+Then check that sample data was loaded correctly:
 
-    Managing Sequences:
-        Effectively manage sequences for generating unique identifiers.
+```sql
+SELECT COUNT(*) FROM employees;
+SELECT COUNT(*) FROM departments;
+SELECT COUNT(*) FROM products;
+SELECT COUNT(*) FROM customers;
+SELECT COUNT(*) FROM orders;
+```
 
-Use DDL to Manage Tables and Their Relationships
+## Troubleshooting
 
-    Describing and Working with Tables and Columns:
-        Understand the theoretical and practical aspects of tables and columns.
+### Common Issues
 
-    Creating and Dropping Tables:
-        Learn how to create tables and manage their structure. Explore dropping columns and setting columns UNUSED.
+1. **ORA-01017: invalid username/password; logon denied**
+   - Double-check your username and password
+   - Ensure the user was created successfully
 
-    Truncating and Creating Temporary Tables:
-        Utilize truncation for quick removal of data and explore the creation and usage of temporary tables.
+2. **ORA-01031: insufficient privileges**
+   - Make sure you granted all necessary privileges to the techcorp user
 
-    Creating and Using External Tables:
-        Understand how to create and use external tables for accessing data outside the database.
+3. **ORA-00942: table or view does not exist**
+   - Verify you're connected as the techcorp user
+   - Check if the table creation script ran successfully
 
-    Managing Constraints:
-        Learn to manage constraints for data integrity.
+### Getting Help
 
-Managing Views
+If you encounter issues not covered here:
 
-    Managing Views:
-        Understand the creation and management of views for simplified data access.
+1. Check the [Issues](https://github.com/godmnathan/1Z0-071_Oracle_Database_SQL_Associate/issues) page to see if others have reported similar problems
+2. Create a new issue with details about your environment and the specific error
 
-Controlling User Access
+## Reset Database
 
-    System Privileges, Object Privileges, Granting Privileges on Tables:
-        Distinguish between system and object privileges. Learn how to grant privileges on tables and the difference between granting privileges and roles.
+If you need to start over, run the cleanup script:
 
-Managing Objects with Data Dictionary Views
+```sql
+@scripts/cleanup.sql
+```
 
-    Using Data Dictionary Views:
-        Explore the use of data dictionary views for managing database objects.
+Then repeat the setup process.
 
-Managing Data in Different Time Zones
+## Next Steps
 
-    Working with CURRENT_DATE, CURRENT_TIMESTAMP, and LOCALTIMESTAMP:
-        Understand how to work with date and timestamp functions for managing time zone differences.
+Once your database is set up:
 
-    Working with INTERVAL Data Types:
-        Learn to work with INTERVAL data types for handling date and time intervals.
+1. Explore the [Database Schema Diagram](database_schema.md) to understand the data model
+2. Try running some basic queries from the [Retrieving Data](../topics/002-retrieving-data/select-basics.md) section
+3. Begin following the [Learning Path](../learning_path.md)
 
-<strong>Contributing</strong>
-This repository is an evolving resource, continuously updated to align with the latest exam objectives and SQL best practices. Your feedback and contributions are highly valued. If you identify areas for improvement, have additional resources to share, or spot any errors, please consider contributing.
+---
 
-## Last Update (03/02/2025)
-
-This README was last updated on February 03, 2025. For the most recent information and contributions, please refer to the latest commits and discussions within the repository.
-
+<p align="center">
+  <b>Happy querying!</b>
+</p>
