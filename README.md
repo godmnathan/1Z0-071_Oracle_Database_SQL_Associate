@@ -1,6 +1,6 @@
 # Oracle Database SQL Associate (1Z0-071) Certification Guide
 
-![Oracle Database](https://www.oracle.com/a/ocom/img/cb71-database-social-share.jpg)
+![Oracle Database SQL Certified Associate](/home/ubuntu/upload/search_images/JNtjUNbdmFS9.png)
 
 ## 🌟 Welcome!
 
