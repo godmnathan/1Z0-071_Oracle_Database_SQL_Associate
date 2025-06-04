@@ -1,5 +1,7 @@
 # Oracle Database SQL Associate (1Z0-071) Certification Guide
 
+![Oracle Database SQL Certified Associate](images/oracle_sql_logo.png)
+
 ## 🌟 Welcome!
 
 Welcome to the ultimate resource for preparing for the Oracle Database SQL Exam (1Z0-071)! Whether you are gearing up for the certification exam or aiming to master SQL fundamentals, this repository is your comprehensive guide covering all exam topics and SQL concepts required for the Oracle Database SQL Associate certification.
